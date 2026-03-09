@@ -2,7 +2,7 @@
   "version": "1.0.0",
   "title": "Card Grid",
   "description": "A configurable card grid widget demonstrating dynamic layout and styling options",
-  "category": "Demo",
+  "category": "msft-gitDemo",
   "imageSrc": "thumbnail.png",
   "configuration": {
     "properties": [

@@ -122,7 +122,7 @@
       "imageSrc": "widgets/card_grid/thumbnail.png"
     },
     {
-      "category": "Demo",
+      "category": "msft-gitDemo",
       "containers": [
         "Full width"
       ],
@@ -145,7 +145,7 @@
       "imageSrc": "widgets/demo_widget/thumbnail.png"
     },
     {
-      "category": "Demo",
+      "category": "msft-gitDemo",
       "configuration": {
         "properties": [
           {
