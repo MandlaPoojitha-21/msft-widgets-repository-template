@@ -111,15 +111,14 @@
         "shared": false,
         "movable": false
       },
-      "title": "Card Grid",
+      "title": "Hello msft",
       "version": "1.0.0",
       "widgetsLibrary": true,
-      "type": "card_grid",
+      "type": "Hello_msft",
       "source": {
-        "path": "widgets/card_grid/dist",
-        "entry": "content.html"
-      },
-      "imageSrc": "widgets/card_grid/thumbnail.png"
+        "path": "widgets/Hello_msft/dist",
+        "entry": "index.html"
+      }
     }
   ]
 }
