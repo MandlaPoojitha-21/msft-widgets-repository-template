@@ -236,8 +236,8 @@
       "widgetsLibrary": true,
       "type": "users-widget",
       "source": {
-        "path": "widgets/users-widget/dist/assets",
-        "entry": "index.js"
+        "path": "widgets/users-widget/dist",
+        "entry": "index.html"
       }
     }
   ]

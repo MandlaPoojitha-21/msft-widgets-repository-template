@@ -5,8 +5,8 @@
   "category": "msft-gitDemo",
   "imageSrc": "thumbnail.png",
   "source": {
-    "path": "dist/assets",
-    "entry": "index.js"
+    "path": "dist",
+    "entry": "index.html"
   },
   "configuration": {
     "properties": [
