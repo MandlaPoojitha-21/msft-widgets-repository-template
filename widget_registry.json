@@ -236,7 +236,7 @@
       "widgetsLibrary": true,
       "type": "users-widget",
       "source": {
-        "path": "widgets/users-widget/dist",
+        "path": "widgets/users-widget/dist/assets",
         "entry": "index.js"
       }
     }
