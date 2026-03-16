@@ -234,9 +234,9 @@
       "title": "Users Widget",
       "version": "1.0.0",
       "widgetsLibrary": true,
-      "type": "users_list",
+      "type": "users_widget",
       "source": {
-        "path": "widgets/users_list/dist",
+        "path": "widgets/users_widget/dist",
         "entry": "index.html"
       }
     }
