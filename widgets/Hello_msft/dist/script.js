@@ -16,7 +16,7 @@ initWidget();
     const sdk = new window.WidgetServiceSDK();
 
     const result = await sdk.connectors.execute({
-      permalink: "users-location",
+      permalink: "get-users",
       method: "GET"
     });
 
