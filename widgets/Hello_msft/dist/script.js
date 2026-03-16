@@ -1,7 +1,7 @@
 function initWidget() {
   console.log("Hello widget loaded");
 
-  const container = document.querySelector(".widget-container");
+  const container = document.querySelector(".widget-hello");
 
   if (container) {
     const msg = document.createElement("p");
