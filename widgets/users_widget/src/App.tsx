@@ -6,7 +6,7 @@ function App() {
 
   return (
     <>
-    <p>Hello this is react widget for microsoft</p>
+    <p>Hello this is react widget for microsoft for testing</p>
     </>
   )
 }
