@@ -1,5 +1,204 @@
 //#region \0rolldown/runtime.js
 var e = (e, t) => () => (t || e((t = { exports: {} }).exports, t), t.exports), t = /* @__PURE__ */ e(((e) => {
+	function t(e, t) {
+		var n = e.length;
+		e.push(t);
+		a: for (; 0 < n;) {
+			var r = n - 1 >>> 1, a = e[r];
+			if (0 < i(a, t)) e[r] = t, e[n] = a, n = r;
+			else break a;
+		}
+	}
+	function n(e) {
+		return e.length === 0 ? null : e[0];
+	}
+	function r(e) {
+		if (e.length === 0) return null;
+		var t = e[0], n = e.pop();
+		if (n !== t) {
+			e[0] = n;
+			a: for (var r = 0, a = e.length, o = a >>> 1; r < o;) {
+				var s = 2 * (r + 1) - 1, c = e[s], l = s + 1, u = e[l];
+				if (0 > i(c, n)) l < a && 0 > i(u, c) ? (e[r] = u, e[l] = n, r = l) : (e[r] = c, e[s] = n, r = s);
+				else if (l < a && 0 > i(u, n)) e[r] = u, e[l] = n, r = l;
+				else break a;
+			}
+		}
+		return t;
+	}
+	function i(e, t) {
+		var n = e.sortIndex - t.sortIndex;
+		return n === 0 ? e.id - t.id : n;
+	}
+	if (e.unstable_now = void 0, typeof performance == "object" && typeof performance.now == "function") {
+		var a = performance;
+		e.unstable_now = function() {
+			return a.now();
+		};
+	} else {
+		var o = Date, s = o.now();
+		e.unstable_now = function() {
+			return o.now() - s;
+		};
+	}
+	var c = [], l = [], u = 1, d = null, f = 3, p = !1, m = !1, h = !1, g = !1, _ = typeof setTimeout == "function" ? setTimeout : null, v = typeof clearTimeout == "function" ? clearTimeout : null, y = typeof setImmediate < "u" ? setImmediate : null;
+	function b(e) {
+		for (var i = n(l); i !== null;) {
+			if (i.callback === null) r(l);
+			else if (i.startTime <= e) r(l), i.sortIndex = i.expirationTime, t(c, i);
+			else break;
+			i = n(l);
+		}
+	}
+	function x(e) {
+		if (h = !1, b(e), !m) if (n(c) !== null) m = !0, ee || (ee = !0, C());
+		else {
+			var t = n(l);
+			t !== null && se(x, t.startTime - e);
+		}
+	}
+	var ee = !1, te = -1, S = 5, ne = -1;
+	function re() {
+		return g ? !0 : !(e.unstable_now() - ne < S);
+	}
+	function ie() {
+		if (g = !1, ee) {
+			var t = e.unstable_now();
+			ne = t;
+			var i = !0;
+			try {
+				a: {
+					m = !1, h && (h = !1, v(te), te = -1), p = !0;
+					var a = f;
+					try {
+						b: {
+							for (b(t), d = n(c); d !== null && !(d.expirationTime > t && re());) {
+								var o = d.callback;
+								if (typeof o == "function") {
+									d.callback = null, f = d.priorityLevel;
+									var s = o(d.expirationTime <= t);
+									if (t = e.unstable_now(), typeof s == "function") {
+										d.callback = s, b(t), i = !0;
+										break b;
+									}
+									d === n(c) && r(c), b(t);
+								} else r(c);
+								d = n(c);
+							}
+							if (d !== null) i = !0;
+							else {
+								var u = n(l);
+								u !== null && se(x, u.startTime - t), i = !1;
+							}
+						}
+						break a;
+					} finally {
+						d = null, f = a, p = !1;
+					}
+					i = void 0;
+				}
+			} finally {
+				i ? C() : ee = !1;
+			}
+		}
+	}
+	var C;
+	if (typeof y == "function") C = function() {
+		y(ie);
+	};
+	else if (typeof MessageChannel < "u") {
+		var ae = new MessageChannel(), oe = ae.port2;
+		ae.port1.onmessage = ie, C = function() {
+			oe.postMessage(null);
+		};
+	} else C = function() {
+		_(ie, 0);
+	};
+	function se(t, n) {
+		te = _(function() {
+			t(e.unstable_now());
+		}, n);
+	}
+	e.unstable_IdlePriority = 5, e.unstable_ImmediatePriority = 1, e.unstable_LowPriority = 4, e.unstable_NormalPriority = 3, e.unstable_Profiling = null, e.unstable_UserBlockingPriority = 2, e.unstable_cancelCallback = function(e) {
+		e.callback = null;
+	}, e.unstable_forceFrameRate = function(e) {
+		0 > e || 125 < e ? console.error("forceFrameRate takes a positive int between 0 and 125, forcing frame rates higher than 125 fps is not supported") : S = 0 < e ? Math.floor(1e3 / e) : 5;
+	}, e.unstable_getCurrentPriorityLevel = function() {
+		return f;
+	}, e.unstable_next = function(e) {
+		switch (f) {
+			case 1:
+			case 2:
+			case 3:
+				var t = 3;
+				break;
+			default: t = f;
+		}
+		var n = f;
+		f = t;
+		try {
+			return e();
+		} finally {
+			f = n;
+		}
+	}, e.unstable_requestPaint = function() {
+		g = !0;
+	}, e.unstable_runWithPriority = function(e, t) {
+		switch (e) {
+			case 1:
+			case 2:
+			case 3:
+			case 4:
+			case 5: break;
+			default: e = 3;
+		}
+		var n = f;
+		f = e;
+		try {
+			return t();
+		} finally {
+			f = n;
+		}
+	}, e.unstable_scheduleCallback = function(r, i, a) {
+		var o = e.unstable_now();
+		switch (typeof a == "object" && a ? (a = a.delay, a = typeof a == "number" && 0 < a ? o + a : o) : a = o, r) {
+			case 1:
+				var s = -1;
+				break;
+			case 2:
+				s = 250;
+				break;
+			case 5:
+				s = 1073741823;
+				break;
+			case 4:
+				s = 1e4;
+				break;
+			default: s = 5e3;
+		}
+		return s = a + s, r = {
+			id: u++,
+			callback: i,
+			priorityLevel: r,
+			startTime: a,
+			expirationTime: s,
+			sortIndex: -1
+		}, a > o ? (r.sortIndex = a, t(l, r), n(c) === null && r === n(l) && (h ? (v(te), te = -1) : h = !0, se(x, a - o))) : (r.sortIndex = s, t(c, r), m || p || (m = !0, ee || (ee = !0, C()))), r;
+	}, e.unstable_shouldYield = re, e.unstable_wrapCallback = function(e) {
+		var t = f;
+		return function() {
+			var n = f;
+			f = t;
+			try {
+				return e.apply(this, arguments);
+			} finally {
+				f = n;
+			}
+		};
+	};
+})), n = /* @__PURE__ */ e(((e, n) => {
+	n.exports = t();
+})), r = /* @__PURE__ */ e(((e) => {
 	var t = Symbol.for("react.transitional.element"), n = Symbol.for("react.portal"), r = Symbol.for("react.fragment"), i = Symbol.for("react.strict_mode"), a = Symbol.for("react.profiler"), o = Symbol.for("react.consumer"), s = Symbol.for("react.context"), c = Symbol.for("react.forward_ref"), l = Symbol.for("react.suspense"), u = Symbol.for("react.memo"), d = Symbol.for("react.lazy"), f = Symbol.for("react.activity"), p = Symbol.iterator;
 	function m(e) {
 		return typeof e != "object" || !e ? null : (e = p && e[p] || e["@@iterator"], typeof e == "function" ? e : null);
@@ -285,210 +484,11 @@ var e = (e, t) => () => (t || e((t = { exports: {} }).exports, t), t.exports), t
 	}, e.useTransition = function() {
 		return S.H.useTransition();
 	}, e.version = "19.2.4";
-})), n = /* @__PURE__ */ e(((e, n) => {
-	n.exports = t();
-})), r = /* @__PURE__ */ e(((e) => {
-	function t(e, t) {
-		var n = e.length;
-		e.push(t);
-		a: for (; 0 < n;) {
-			var r = n - 1 >>> 1, a = e[r];
-			if (0 < i(a, t)) e[r] = t, e[n] = a, n = r;
-			else break a;
-		}
-	}
-	function n(e) {
-		return e.length === 0 ? null : e[0];
-	}
-	function r(e) {
-		if (e.length === 0) return null;
-		var t = e[0], n = e.pop();
-		if (n !== t) {
-			e[0] = n;
-			a: for (var r = 0, a = e.length, o = a >>> 1; r < o;) {
-				var s = 2 * (r + 1) - 1, c = e[s], l = s + 1, u = e[l];
-				if (0 > i(c, n)) l < a && 0 > i(u, c) ? (e[r] = u, e[l] = n, r = l) : (e[r] = c, e[s] = n, r = s);
-				else if (l < a && 0 > i(u, n)) e[r] = u, e[l] = n, r = l;
-				else break a;
-			}
-		}
-		return t;
-	}
-	function i(e, t) {
-		var n = e.sortIndex - t.sortIndex;
-		return n === 0 ? e.id - t.id : n;
-	}
-	if (e.unstable_now = void 0, typeof performance == "object" && typeof performance.now == "function") {
-		var a = performance;
-		e.unstable_now = function() {
-			return a.now();
-		};
-	} else {
-		var o = Date, s = o.now();
-		e.unstable_now = function() {
-			return o.now() - s;
-		};
-	}
-	var c = [], l = [], u = 1, d = null, f = 3, p = !1, m = !1, h = !1, g = !1, _ = typeof setTimeout == "function" ? setTimeout : null, v = typeof clearTimeout == "function" ? clearTimeout : null, y = typeof setImmediate < "u" ? setImmediate : null;
-	function b(e) {
-		for (var i = n(l); i !== null;) {
-			if (i.callback === null) r(l);
-			else if (i.startTime <= e) r(l), i.sortIndex = i.expirationTime, t(c, i);
-			else break;
-			i = n(l);
-		}
-	}
-	function x(e) {
-		if (h = !1, b(e), !m) if (n(c) !== null) m = !0, ee || (ee = !0, C());
-		else {
-			var t = n(l);
-			t !== null && se(x, t.startTime - e);
-		}
-	}
-	var ee = !1, te = -1, S = 5, ne = -1;
-	function re() {
-		return g ? !0 : !(e.unstable_now() - ne < S);
-	}
-	function ie() {
-		if (g = !1, ee) {
-			var t = e.unstable_now();
-			ne = t;
-			var i = !0;
-			try {
-				a: {
-					m = !1, h && (h = !1, v(te), te = -1), p = !0;
-					var a = f;
-					try {
-						b: {
-							for (b(t), d = n(c); d !== null && !(d.expirationTime > t && re());) {
-								var o = d.callback;
-								if (typeof o == "function") {
-									d.callback = null, f = d.priorityLevel;
-									var s = o(d.expirationTime <= t);
-									if (t = e.unstable_now(), typeof s == "function") {
-										d.callback = s, b(t), i = !0;
-										break b;
-									}
-									d === n(c) && r(c), b(t);
-								} else r(c);
-								d = n(c);
-							}
-							if (d !== null) i = !0;
-							else {
-								var u = n(l);
-								u !== null && se(x, u.startTime - t), i = !1;
-							}
-						}
-						break a;
-					} finally {
-						d = null, f = a, p = !1;
-					}
-					i = void 0;
-				}
-			} finally {
-				i ? C() : ee = !1;
-			}
-		}
-	}
-	var C;
-	if (typeof y == "function") C = function() {
-		y(ie);
-	};
-	else if (typeof MessageChannel < "u") {
-		var ae = new MessageChannel(), oe = ae.port2;
-		ae.port1.onmessage = ie, C = function() {
-			oe.postMessage(null);
-		};
-	} else C = function() {
-		_(ie, 0);
-	};
-	function se(t, n) {
-		te = _(function() {
-			t(e.unstable_now());
-		}, n);
-	}
-	e.unstable_IdlePriority = 5, e.unstable_ImmediatePriority = 1, e.unstable_LowPriority = 4, e.unstable_NormalPriority = 3, e.unstable_Profiling = null, e.unstable_UserBlockingPriority = 2, e.unstable_cancelCallback = function(e) {
-		e.callback = null;
-	}, e.unstable_forceFrameRate = function(e) {
-		0 > e || 125 < e ? console.error("forceFrameRate takes a positive int between 0 and 125, forcing frame rates higher than 125 fps is not supported") : S = 0 < e ? Math.floor(1e3 / e) : 5;
-	}, e.unstable_getCurrentPriorityLevel = function() {
-		return f;
-	}, e.unstable_next = function(e) {
-		switch (f) {
-			case 1:
-			case 2:
-			case 3:
-				var t = 3;
-				break;
-			default: t = f;
-		}
-		var n = f;
-		f = t;
-		try {
-			return e();
-		} finally {
-			f = n;
-		}
-	}, e.unstable_requestPaint = function() {
-		g = !0;
-	}, e.unstable_runWithPriority = function(e, t) {
-		switch (e) {
-			case 1:
-			case 2:
-			case 3:
-			case 4:
-			case 5: break;
-			default: e = 3;
-		}
-		var n = f;
-		f = e;
-		try {
-			return t();
-		} finally {
-			f = n;
-		}
-	}, e.unstable_scheduleCallback = function(r, i, a) {
-		var o = e.unstable_now();
-		switch (typeof a == "object" && a ? (a = a.delay, a = typeof a == "number" && 0 < a ? o + a : o) : a = o, r) {
-			case 1:
-				var s = -1;
-				break;
-			case 2:
-				s = 250;
-				break;
-			case 5:
-				s = 1073741823;
-				break;
-			case 4:
-				s = 1e4;
-				break;
-			default: s = 5e3;
-		}
-		return s = a + s, r = {
-			id: u++,
-			callback: i,
-			priorityLevel: r,
-			startTime: a,
-			expirationTime: s,
-			sortIndex: -1
-		}, a > o ? (r.sortIndex = a, t(l, r), n(c) === null && r === n(l) && (h ? (v(te), te = -1) : h = !0, se(x, a - o))) : (r.sortIndex = s, t(c, r), m || p || (m = !0, ee || (ee = !0, C()))), r;
-	}, e.unstable_shouldYield = re, e.unstable_wrapCallback = function(e) {
-		var t = f;
-		return function() {
-			var n = f;
-			f = t;
-			try {
-				return e.apply(this, arguments);
-			} finally {
-				f = n;
-			}
-		};
-	};
 })), i = /* @__PURE__ */ e(((e, t) => {
 	t.exports = r();
 })), a = /* @__PURE__ */ e(((e) => {
-	var t = n();
-	function r(e) {
+	var t = i();
+	function n(e) {
 		var t = "https://react.dev/errors/" + e;
 		if (1 < arguments.length) {
 			t += "?args[]=" + encodeURIComponent(arguments[1]);
@@ -496,20 +496,20 @@ var e = (e, t) => () => (t || e((t = { exports: {} }).exports, t), t.exports), t
 		}
 		return "Minified React error #" + e + "; visit " + t + " for the full message or use the non-minified dev environment for full errors and additional helpful warnings.";
 	}
-	function i() {}
+	function r() {}
 	var a = {
 		d: {
-			f: i,
+			f: r,
 			r: function() {
-				throw Error(r(522));
+				throw Error(n(522));
 			},
-			D: i,
-			C: i,
-			L: i,
-			m: i,
-			X: i,
-			S: i,
-			M: i
+			D: r,
+			C: r,
+			L: r,
+			m: r,
+			X: r,
+			S: r,
+			M: r
 		},
 		p: 0,
 		findDOMNode: null
@@ -530,9 +530,9 @@ var e = (e, t) => () => (t || e((t = { exports: {} }).exports, t), t.exports), t
 		if (typeof t == "string") return t === "use-credentials" ? t : "";
 	}
 	e.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE = a, e.createPortal = function(e, t) {
-		var n = 2 < arguments.length && arguments[2] !== void 0 ? arguments[2] : null;
-		if (!t || t.nodeType !== 1 && t.nodeType !== 9 && t.nodeType !== 11) throw Error(r(299));
-		return s(e, t, null, n);
+		var r = 2 < arguments.length && arguments[2] !== void 0 ? arguments[2] : null;
+		if (!t || t.nodeType !== 1 && t.nodeType !== 9 && t.nodeType !== 11) throw Error(n(299));
+		return s(e, t, null, r);
 	}, e.flushSync = function(e) {
 		var t = c.T, n = a.p;
 		try {
@@ -612,7 +612,7 @@ var e = (e, t) => () => (t || e((t = { exports: {} }).exports, t), t.exports), t
 	}
 	n(), t.exports = a();
 })), s = /* @__PURE__ */ e(((e) => {
-	var t = i(), r = n(), a = o();
+	var t = n(), r = i(), a = o();
 	function s(e) {
 		var t = "https://react.dev/errors/" + e;
 		if (1 < arguments.length) {
@@ -7993,7 +7993,7 @@ var e = (e, t) => () => (t || e((t = { exports: {} }).exports, t), t.exports), t
 		}
 	}
 	n(), t.exports = s();
-})))(), l = n(), u = /* @__PURE__ */ e(((e) => {
+})))(), l = /* @__PURE__ */ e(((e) => {
 	var t = Symbol.for("react.transitional.element"), n = Symbol.for("react.fragment");
 	function r(e, n, r) {
 		var i = null;
@@ -8008,13 +8008,18 @@ var e = (e, t) => () => (t || e((t = { exports: {} }).exports, t), t.exports), t
 		};
 	}
 	e.Fragment = n, e.jsx = r;
-})), d = (/* @__PURE__ */ e(((e, t) => {
-	t.exports = u();
+})), u = (/* @__PURE__ */ e(((e, t) => {
+	t.exports = l();
 })))();
-function f() {
-	return /* @__PURE__ */ (0, d.jsx)(d.Fragment, { children: /* @__PURE__ */ (0, d.jsx)("p", { children: "Hello this is react widget for microsoft for testing" }) });
+function d() {
+	return /* @__PURE__ */ (0, u.jsx)(u.Fragment, { children: /* @__PURE__ */ (0, u.jsx)("p", { children: "Hello this is react widget for microsoft for testing" }) });
 }
 //#endregion
 //#region src/main.tsx
-(0, c.createRoot)(document.getElementById("root")).render(/* @__PURE__ */ (0, d.jsx)(l.StrictMode, { children: /* @__PURE__ */ (0, d.jsx)(f, {}) }));
+async function f(e) {
+	await e.whenReady();
+	let t = (0, c.createRoot)(e.shadowRoot);
+	t.render(/* @__PURE__ */ (0, u.jsx)(d, {})), e.on("destroy", () => t.unmount());
+}
 //#endregion
+export { f as init };
