@@ -1,10 +1,10 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
+import { createRoot } from "react-dom/client";
+import "./index.css";
+import App from "./App.tsx";
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+export async function init(sdk: any) {
+  await sdk.whenReady();
+  const root = createRoot(sdk.shadowRoot);
+  root.render(<App />);
+  sdk.on("destroy", () => root.unmount());
+}
