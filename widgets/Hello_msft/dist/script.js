@@ -1,7 +1,7 @@
 function initWidget() {
   console.log("Hello widget loaded");
 
-  const container = document.querySelector(".widget-hello");
+  const container = document.querySelector(".git-demo-container");
 
   if (container) {
     const msg = document.createElement("p");
